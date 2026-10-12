@@ -1,34 +1,792 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>listy</title>
+    <title>Internal CS Hub | Wewnętrzne Rozgrywki CS2</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Orbitron & Rajdhani -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cs: {
+                            orange: '#f59e0b',
+                            amber: '#fbbf24',
+                            dark: '#0f172a',
+                            panel: '#1e293b',
+                            card: '#0d1322',
+                            ct: '#3b82f6',
+                            t: '#ef4444',
+                            accent: '#06b6d4'
+                        }
+                    },
+                    fontFamily: {
+                        orbitron: ['Orbitron', 'sans-serif'],
+                        rajdhani: ['Rajdhani', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: #080c14;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+
+        .glow-orange {
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.35);
+        }
+
+        .glow-blue {
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.35);
+        }
+
+        .text-glow-orange {
+            text-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
+        }
+
+        .text-glow-blue {
+            text-shadow: 0 0 10px rgba(6, 182, 212, 0.6);
+        }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #080c14;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f59e0b;
+        }
+    </style>
 </head>
-<body>
-    <!--lista numerowana-->
-    <h2> lista rankingowa</h2>
-    <ol>
-        <li> Tomek</li>
-        <li> Franek</li>
-    </ol>
-     <!--lista nie numerowana-->
-     <h2> list elementów</h2>
-     <ul>
-        <li> długopis</li>
-        <li> ołówek </li>
-     </ul>
-     <!-- lista zagnieżdżona -->
-      <h2> Państwa świata </h2>
-      <ul>
-        <li> Europa</li>
-        <ol> 
-            <li> Polska </li>
-            <li> Niemcy</li>
-            <li> Ukraina </li>
-        </ol>
-        <li> Azja </li>
-      </ul>
-     
+<body class="min-h-screen flex flex-col justify-between selection:bg-amber-500 selection:text-black">
+
+    <!-- NAVIGATION BAR -->
+    <header class="sticky top-0 z-50 glass-panel border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="scrollToSection('hero')">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center shadow-lg shadow-amber-500/30">
+                        <i class="fa-solid font-black text-slate-950 text-xl fa-crosshairs"></i>
+                    </div>
+                    <div>
+                        <span class="font-orbitron font-extrabold text-2xl tracking-wider bg-gradient-to-r from-amber-400 via-orange-500 to-cyan-400 bg-clip-text text-transparent">
+                            INTERNAL<span class="text-white">CS</span>
+                        </span>
+                        <span class="block text-xs uppercase tracking-widest text-slate-400 font-semibold -mt-1">Private League</span>
+                    </div>
+                </div>
+
+                <!-- Navigation Links -->
+                <nav class="hidden md:flex space-x-8 font-semibold tracking-wide text-lg">
+                    <a href="#servers" class="text-slate-300 hover:text-amber-400 transition-colors duration-200">Serwery</a>
+                    <a href="#lobby" class="text-slate-300 hover:text-amber-400 transition-colors duration-200">Mecze & Lobby</a>
+                    <a href="#leaderboard" class="text-slate-300 hover:text-amber-400 transition-colors duration-200">Tabela Wyników</a>
+                    <a href="#history" class="text-slate-300 hover:text-amber-400 transition-colors duration-200">Historia</a>
+                    <a href="#rules" class="text-slate-300 hover:text-amber-400 transition-colors duration-200">Zasady</a>
+                </nav>
+
+                <!-- User Profile / Discord Status -->
+                <div class="flex items-center space-x-4">
+                    <a href="https://discord.com" target="_blank" class="hidden sm:flex items-center space-x-2 bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-300 border border-indigo-500/40 px-4 py-2 rounded-lg transition duration-200 font-medium text-sm">
+                        <i class="fa-brands fa-discord text-lg"></i>
+                        <span>Discord Connected</span>
+                    </a>
+                    <div id="userBadge" class="flex items-center space-x-3 bg-slate-800/80 border border-slate-700/60 rounded-lg p-1.5 pr-3">
+                        <img src="https://placehold.co/100x100/1e293b/fbbf24?text=CS" alt="Avatar" class="w-8 h-8 rounded-md border border-amber-500">
+                        <div class="text-xs">
+                            <div class="font-bold text-white leading-tight">S1mple_Dev</div>
+                            <div class="text-amber-400 text-[10px] uppercase font-bold tracking-wider">Level 10 • Global</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-grow">
+
+        <!-- HERO SECTION -->
+        <section id="hero" class="relative py-16 md:py-24 overflow-hidden border-b border-slate-800/50">
+            <!-- Background Elements -->
+            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-500/10 via-slate-950/80 to-slate-950 pointer-events-none"></div>
+            <div class="absolute -top-24 -left-24 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute top-1/2 -right-24 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    
+                    <!-- Left Hero Content -->
+                    <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                        <div class="inline-flex items-center space-x-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 px-3.5 py-1.5 rounded-full text-xs uppercase tracking-widest font-bold">
+                            <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+                            <span>Sezon #4 Trwa • Wewnętrzny Hub CS2</span>
+                        </div>
+                        
+                        <h1 class="font-orbitron text-4xl sm:text-6xl font-black tracking-tight leading-tight">
+                            RYWALIZACJA NA <br>
+                            <span class="bg-gradient-to-r from-amber-400 via-orange-500 to-amber-200 bg-clip-text text-transparent text-glow-orange">NAJWYŻSZYM POZIOMIE</span>
+                        </h1>
+                        
+                        <p class="text-slate-300 text-lg max-w-2xl font-medium leading-relaxed">
+                            Prywatne rozgrywki 5v5 dla zweryfikowanych graczy naszej społeczności. Autorski matchmaking, profesjonalny tickrate 128, statystyki live oraz automatyczny bilans drużyn.
+                        </p>
+
+                        <!-- Action Buttons -->
+                        <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
+                            <button onclick="scrollToSection('lobby')" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-slate-950 font-orbitron font-extrabold text-lg rounded-xl shadow-lg shadow-amber-500/20 transform hover:-translate-y-0.5 transition duration-200 flex items-center justify-center space-x-3">
+                                <i class="fa-solid fa-gamepad"></i>
+                                <span>DOŁĄCZ DO MECZU</span>
+                            </button>
+                            <button onclick="scrollToSection('leaderboard')" class="w-full sm:w-auto px-8 py-4 glass-panel border border-slate-700 hover:border-amber-500/50 text-white font-orbitron font-bold text-lg rounded-xl hover:bg-slate-800/80 transition duration-200 flex items-center justify-center space-x-3">
+                                <i class="fa-solid fa-trophy text-amber-400"></i>
+                                <span>TABELA WYNIKÓW</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Right Hero Stats / Live Servers Card -->
+                    <div id="servers" class="lg:col-span-5">
+                        <div class="glass-panel p-6 rounded-2xl border border-slate-800 shadow-2xl relative">
+                            <div class="flex items-center justify-between pb-4 border-b border-slate-800 mb-6">
+                                <h3 class="font-orbitron font-bold text-xl text-white flex items-center space-x-2">
+                                    <i class="fa-solid fa-server text-amber-400"></i>
+                                    <span>STATUS SERWERÓW</span>
+                                </h3>
+                                <span class="bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs px-2.5 py-1 rounded-md font-bold uppercase tracking-wider flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span> 2 Online
+                                </span>
+                            </div>
+
+                            <!-- Server Cards List -->
+                            <div class="space-y-4">
+                                <!-- Server 1 -->
+                                <div class="glass-card p-4 rounded-xl border border-slate-800 hover:border-amber-500/30 transition duration-200">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div>
+                                            <div class="font-bold text-white text-base">Serwer #1 (Warszawa 128T)</div>
+                                            <div class="text-xs text-slate-400">Map: <span class="text-amber-400 font-semibold">de_mirage</span></div>
+                                        </div>
+                                        <span class="text-xs font-bold px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                                            LIVE - 14:11
+                                        </span>
+                                    </div>
+                                    <div class="w-full bg-slate-950 rounded-full h-2 mb-2 overflow-hidden border border-slate-800">
+                                        <div class="bg-amber-500 h-2 rounded-full w-full"></div>
+                                    </div>
+                                    <div class="flex justify-between text-xs text-slate-400">
+                                        <span>Gracze: <strong class="text-white">10/10</strong></span>
+                                        <span>Ping: <strong class="text-emerald-400">12 ms</strong></span>
+                                    </div>
+                                </div>
+
+                                <!-- Server 2 -->
+                                <div class="glass-card p-4 rounded-xl border border-slate-800 hover:border-cyan-500/30 transition duration-200">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div>
+                                            <div class="font-bold text-white text-base">Serwer #2 (Frankfurt 128T)</div>
+                                            <div class="text-xs text-slate-400">Map: <span class="text-cyan-400 font-semibold">de_inferno</span></div>
+                                        </div>
+                                        <span class="text-xs font-bold px-2.5 py-1 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 animate-pulse">
+                                            LOBBY (7/10)
+                                        </span>
+                                    </div>
+                                    <div class="w-full bg-slate-950 rounded-full h-2 mb-2 overflow-hidden border border-slate-800">
+                                        <div class="bg-cyan-500 h-2 rounded-full w-[70%]"></div>
+                                    </div>
+                                    <div class="flex justify-between text-xs text-slate-400">
+                                        <span>Gracze: <strong class="text-white">7/10</strong></span>
+                                        <span>Ping: <strong class="text-emerald-400">24 ms</strong></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Server IP Quick Connect -->
+                            <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+                                <span>Automatyczny autoryzator CS2:</span>
+                                <button onclick="copyToClipboard('connect cs.internal-hub.pl:27015')" class="text-amber-400 hover:text-amber-300 font-bold flex items-center gap-1 transition">
+                                    <i class="fa-regular fa-copy"></i> Kopiuj IP Connect
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- LOBBY & MATCHMAKING SECTION -->
+        <section id="lobby" class="py-16 bg-slate-950/60 border-b border-slate-800/60">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-8">
+                    <div>
+                        <div class="text-amber-400 font-bold text-sm tracking-widest uppercase mb-1">Matchmaking Hub</div>
+                        <h2 class="font-orbitron text-3xl sm:text-4xl font-extrabold text-white">AKTYWNE POCZEKALNIE & LOBBY</h2>
+                    </div>
+                    <div class="mt-4 md:mt-0 flex space-x-3">
+                        <button onclick="createNewLobby()" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold rounded-lg border border-amber-500/30 transition text-sm flex items-center space-x-2">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>Stwórz Własne Lobby</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- MAIN LOBBY CARD SIMULATOR -->
+                <div class="glass-panel rounded-2xl border border-slate-800 p-6 shadow-2xl relative overflow-hidden">
+                    <!-- Top Info bar -->
+                    <div class="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-slate-800">
+                        <div class="flex items-center space-x-4">
+                            <div class="bg-amber-500/20 text-amber-400 p-3 rounded-xl border border-amber-500/30">
+                                <i class="fa-solid fa-crosshairs text-2xl"></i>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <h3 class="font-orbitron font-bold text-xl text-white">Mecz #4092 - Capatains Pick 5v5</h3>
+                                    <span class="bg-slate-800 text-slate-300 text-xs px-2.5 py-0.5 rounded font-semibold border border-slate-700">MR12</span>
+                                </div>
+                                <p class="text-xs text-slate-400">Serwer: <span class="text-white">Warszawa #1</span> • Wybieranie mapy: <span id="selectedMapText" class="text-amber-400 font-bold">de_mirage</span></p>
+                            </div>
+                        </div>
+
+                        <!-- Status & Controls -->
+                        <div class="flex items-center space-x-4">
+                            <div class="text-right">
+                                <div class="text-xs text-slate-400 uppercase font-bold tracking-wider">Status Gotowości</div>
+                                <div id="lobbyStatusText" class="font-orbitron text-amber-400 font-bold text-lg">OCZEKIWANIE (8/10)</div>
+                            </div>
+                            <button id="readyBtn" onclick="toggleReadyStatus()" class="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-orbitron font-extrabold rounded-xl shadow-lg transition duration-200 flex items-center space-x-2">
+                                <i class="fa-solid fa-check-double"></i>
+                                <span id="readyBtnText">POTWIERDŹ GOTOWOŚĆ</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- TEAMS DISPLAY GRID -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 my-8 relative">
+                        <!-- VS Badge Middle -->
+                        <div class="hidden md:flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-slate-900 border-2 border-amber-500/50 rounded-full items-center justify-center font-orbitron font-black text-amber-400 text-sm shadow-xl z-10">
+                            VS
+                        </div>
+
+                        <!-- TEAM COUNTER-TERRORISTS (CT) -->
+                        <div class="glass-card p-5 rounded-xl border border-blue-500/20 bg-gradient-to-b from-blue-950/20 to-transparent">
+                            <div class="flex justify-between items-center pb-3 border-b border-blue-500/20 mb-4">
+                                <div class="flex items-center space-x-2">
+                                    <i class="fa-solid fa-shield-halved text-blue-400 text-xl"></i>
+                                    <h4 class="font-orbitron font-bold text-lg text-blue-400">TEAM ALPHA (CT)</h4>
+                                </div>
+                                <span class="text-xs font-bold text-slate-400">Śr. Elo: <strong class="text-white">2140</strong></span>
+                            </div>
+
+                            <!-- CT Player Slot List -->
+                            <div id="ctPlayerList" class="space-y-2.5">
+                                <!-- Dynamic Players inserted via JS -->
+                            </div>
+
+                            <button onclick="joinTeam('CT')" class="w-full mt-4 py-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/40 rounded-lg font-bold text-xs uppercase tracking-wider transition">
+                                Dołącz do Team CT
+                            </button>
+                        </div>
+
+                        <!-- TEAM TERRORISTS (T) -->
+                        <div class="glass-card p-5 rounded-xl border border-red-500/20 bg-gradient-to-b from-red-950/20 to-transparent">
+                            <div class="flex justify-between items-center pb-3 border-b border-red-500/20 mb-4">
+                                <div class="flex items-center space-x-2">
+                                    <i class="fa-solid fa-bomb text-red-400 text-xl"></i>
+                                    <h4 class="font-orbitron font-bold text-lg text-red-400">TEAM BRAVO (T)</h4>
+                                </div>
+                                <span class="text-xs font-bold text-slate-400">Śr. Elo: <strong class="text-white">2095</strong></span>
+                            </div>
+
+                            <!-- T Player Slot List -->
+                            <div id="tPlayerList" class="space-y-2.5">
+                                <!-- Dynamic Players inserted via JS -->
+                            </div>
+
+                            <button onclick="joinTeam('T')" class="w-full mt-4 py-2 bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/40 rounded-lg font-bold text-xs uppercase tracking-wider transition">
+                                Dołącz do Team T
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- MAP BAN / SELECTION STRIP -->
+                    <div class="bg-slate-900/80 rounded-xl p-4 border border-slate-800">
+                        <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Pula Map Rozgrywki (Głosowanie):</div>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2" id="mapPoolContainer">
+                            <!-- Map items dynamically clickable -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- LEADERBOARD SECTION -->
+        <section id="leaderboard" class="py-16 border-b border-slate-800/60">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-8">
+                    <div>
+                        <div class="text-amber-400 font-bold text-sm tracking-widest uppercase mb-1">Ranking Graczy</div>
+                        <h2 class="font-orbitron text-3xl sm:text-4xl font-extrabold text-white">TABELA WYNIKÓW SEZONU</h2>
+                    </div>
+                    
+                    <!-- Search & Filters -->
+                    <div class="mt-4 md:mt-0 flex flex-col sm:flex-row gap-3">
+                        <div class="relative">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            <input type="text" id="playerSearch" oninput="filterLeaderboard()" placeholder="Szukaj gracza..." class="bg-slate-900 border border-slate-700 focus:border-amber-500 text-white text-sm rounded-lg pl-10 pr-4 py-2.5 outline-none w-full sm:w-64 transition">
+                        </div>
+                        <select id="rankFilter" onchange="filterLeaderboard()" class="bg-slate-900 border border-slate-700 text-slate-300 text-sm rounded-lg px-4 py-2.5 outline-none focus:border-amber-500">
+                            <option value="ALL">Wszystkie Rangi</option>
+                            <option value="Global Elite">Global Elite</option>
+                            <option value="Supreme">Supreme</option>
+                            <option value="LEM">LEM</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- LEADERBOARD TABLE -->
+                <div class="glass-panel rounded-2xl border border-slate-800 overflow-hidden shadow-xl">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-900/90 border-b border-slate-800 text-xs uppercase font-orbitron text-slate-400 tracking-wider">
+                                    <th class="py-4 px-6"># Rank</th>
+                                    <th class="py-4 px-6">Gracz</th>
+                                    <th class="py-4 px-6 text-center">Ranga</th>
+                                    <th class="py-4 px-6 text-center cursor-pointer hover:text-amber-400 transition" onclick="sortLeaderboard('elo')">
+                                        Elo <i class="fa-solid fa-sort text-xs"></i>
+                                    </th>
+                                    <th class="py-4 px-6 text-center cursor-pointer hover:text-amber-400 transition" onclick="sortLeaderboard('kd')">
+                                        K/D Ratio <i class="fa-solid fa-sort text-xs"></i>
+                                    </th>
+                                    <th class="py-4 px-6 text-center cursor-pointer hover:text-amber-400 transition" onclick="sortLeaderboard('winrate')">
+                                        Winrate <i class="fa-solid fa-sort text-xs"></i>
+                                    </th>
+                                    <th class="py-4 px-6 text-center">MVP</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboardBody" class="divide-y divide-slate-800/60 text-sm font-medium">
+                                <!-- Populated dynamically by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- MATCH HISTORY SECTION -->
+        <section id="history" class="py-16 bg-slate-950/60 border-b border-slate-800/60">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <div class="mb-8">
+                    <div class="text-amber-400 font-bold text-sm tracking-widest uppercase mb-1">Archiwum Spotkań</div>
+                    <h2 class="font-orbitron text-3xl sm:text-4xl font-extrabold text-white">OSTATNIE MECZE</h2>
+                </div>
+
+                <!-- Match Cards Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="matchHistoryContainer">
+                    <!-- Populated dynamically via JS -->
+                </div>
+
+            </div>
+        </section>
+
+        <!-- RULES SECTION -->
+        <section id="rules" class="py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <div class="text-center max-w-3xl mx-auto mb-12">
+                    <div class="text-amber-400 font-bold text-sm tracking-widest uppercase mb-1">Regulamin Ligi</div>
+                    <h2 class="font-orbitron text-3xl sm:text-4xl font-extrabold text-white mb-4">ZASADY WEWNĘTRZNEGO CS-A</h2>
+                    <p class="text-slate-400">Przestrzeganie zasad gwarantuje najwyższą jakość rywalizacji i dobrą atmosferę w społeczności.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Rule 1 -->
+                    <div class="glass-panel p-6 rounded-2xl border border-slate-800 hover:border-amber-500/30 transition">
+                        <div class="w-12 h-12 bg-amber-500/10 border border-amber-500/30 rounded-xl flex items-center justify-center text-amber-400 text-xl font-bold mb-4">
+                            01
+                        </div>
+                        <h3 class="font-orbitron font-bold text-lg text-white mb-2">Fair Play & Wyciszenie</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            Brak toksyczności, wyzywania oraz celowego przeszkadzania sojusznikom. Szanuj swoich partnerów z drużyny oraz przeciwników.
+                        </p>
+                    </div>
+
+                    <!-- Rule 2 -->
+                    <div class="glass-panel p-6 rounded-2xl border border-slate-800 hover:border-amber-500/30 transition">
+                        <div class="w-12 h-12 bg-amber-500/10 border border-amber-500/30 rounded-xl flex items-center justify-center text-amber-400 text-xl font-bold mb-4">
+                            02
+                        </div>
+                        <h3 class="font-orbitron font-bold text-lg text-white mb-2">Wymagany Discord</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            Każdy gracz podczas meczu zobowiązany jest do przebywania na dedykowanym kanale głosowym Discorda z sprawnym mikrofonem.
+                        </p>
+                    </div>
+
+                    <!-- Rule 3 -->
+                    <div class="glass-panel p-6 rounded-2xl border border-slate-800 hover:border-amber-500/30 transition">
+                        <div class="w-12 h-12 bg-amber-500/10 border border-amber-500/30 rounded-xl flex items-center justify-center text-amber-400 text-xl font-bold mb-4">
+                            03
+                        </div>
+                        <h3 class="font-orbitron font-bold text-lg text-white mb-2">Anti-Cheat & Zgłoszenia</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            Wszelkie próby oszukiwania (skrypty, cheaty, wykorzystywanie błędów) skutkują natychmiastowym i permanentnym banem w lidze.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="glass-panel border-t border-slate-800/80 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-crosshairs text-amber-400"></i>
+                <span class="font-orbitron font-bold text-slate-300">Internal CS League &copy; 2026</span>
+            </div>
+            <div class="text-xs text-slate-500">
+                Strona stworzona dla celów społecznościowych Wewnętrznego CS-a. CS2 jest zarejestrowanym znakiem Valve Corp.
+            </div>
+        </div>
+    </footer>
+
+    <!-- TOAST NOTIFICATION BOX -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="glass-panel border border-amber-500/40 bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center space-x-3">
+            <i id="toastIcon" class="fa-solid fa-circle-info text-amber-400 text-lg"></i>
+            <span id="toastMsg" class="font-medium text-sm">Powiadomienie systemowe</span>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Mock State Data
+        const leaderboardData = [
+            { id: 1, name: "s1mple_fan", rank: "Global Elite", elo: 2840, kd: 1.62, winrate: "68%", mvps: 142 },
+            { id: 2, name: "ZywOo_JR", rank: "Global Elite", elo: 2790, kd: 1.55, winrate: "65%", mvps: 128 },
+            { id: 3, name: "Snax_Clutch", rank: "Supreme", elo: 2450, kd: 1.34, winrate: "59%", mvps: 94 },
+            { id: 4, name: "NiKo_OneTap", rank: "Global Elite", elo: 2410, kd: 1.48, winrate: "57%", mvps: 110 },
+            { id: 5, name: "Monesy_AWP", rank: "Supreme", elo: 2380, kd: 1.39, winrate: "56%", mvps: 88 },
+            { id: 6, name: "B1t_Headshot", rank: "LEM", elo: 2210, kd: 1.21, winrate: "53%", mvps: 64 },
+            { id: 7, name: "Ropz_Lurker", rank: "LEM", elo: 2150, kd: 1.18, winrate: "51%", mvps: 52 },
+            { id: 8, name: "Karrigan_IGL", rank: "LEM", elo: 2040, kd: 0.98, winrate: "52%", mvps: 41 }
+        ];
+
+        let ctPlayers = [
+            { name: "S1mple_Dev", rank: "Global Elite", ready: true, isYou: true },
+            { name: "Snax_Clutch", rank: "Supreme", ready: true, isYou: false },
+            { name: "ZywOo_JR", rank: "Global Elite", ready: true, isYou: false },
+            { name: "Karrigan_IGL", rank: "LEM", ready: false, isYou: false }
+        ];
+
+        let tPlayers = [
+            { name: "NiKo_OneTap", rank: "Global Elite", ready: true, isYou: false },
+            { name: "Monesy_AWP", rank: "Supreme", ready: true, isYou: false },
+            { name: "B1t_Headshot", rank: "LEM", ready: true, isYou: false },
+            { name: "Ropz_Lurker", rank: "LEM", ready: false, isYou: false }
+        ];
+
+        const mapPool = [
+            { name: "de_mirage", active: true },
+            { name: "de_inferno", active: false },
+            { name: "de_nuke", active: false },
+            { name: "de_ancient", active: false },
+            { name: "de_anubis", active: false },
+            { name: "de_dust2", active: false },
+            { name: "de_vertigo", active: false }
+        ];
+
+        const matchHistoryData = [
+            { id: 101, map: "de_mirage", score: "16 : 12", winner: "CT", mvp: "s1mple_fan (28K)", date: "Dzisiaj, 19:30" },
+            { id: 102, map: "de_inferno", score: "14 : 16", winner: "T", mvp: "ZywOo_JR (31K)", date: "Wczoraj, 21:15" },
+            { id: 103, map: "de_nuke", score: "13 : 9", winner: "CT", mvp: "NiKo_OneTap (24K)", date: "10 Paź, 18:00" }
+        ];
+
+        let userIsReady = false;
+
+        // On DOM Content Loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            renderLobby();
+            renderLeaderboard(leaderboardData);
+            renderMapPool();
+            renderMatchHistory();
+        });
+
+        // Smooth Scroll
+        function scrollToSection(id) {
+            document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Copy Text Helper
+        function copyToClipboard(text) {
+            document.execCommand('copy');
+            showToast(`Skopiowano polecenie: "${text}"`, 'fa-clipboard-check');
+        }
+
+        // Show Toast Function
+        function showToast(message, iconClass = 'fa-circle-info') {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastMsg.innerText = message;
+            toastIcon.className = `fa-solid ${iconClass} text-amber-400 text-lg`;
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Render Players in Lobby
+        function renderLobby() {
+            const ctList = document.getElementById('ctPlayerList');
+            const tList = document.getElementById('tPlayerList');
+
+            ctList.innerHTML = ctPlayers.map(p => createPlayerRowHTML(p, 'CT')).join('');
+            tList.innerHTML = tPlayers.map(p => createPlayerRowHTML(p, 'T')).join('');
+
+            // Update status
+            const totalReady = [...ctPlayers, ...tPlayers].filter(p => p.ready).length;
+            const totalPlayers = ctPlayers.length + tPlayers.length;
+            document.getElementById('lobbyStatusText').innerText = `GOTOWOŚĆ (${totalReady}/${totalPlayers})`;
+        }
+
+        function createPlayerRowHTML(player, team) {
+            const readyBg = player.ready ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-slate-800 text-slate-500 border-slate-700';
+            const readyText = player.ready ? 'READY' : 'NOT READY';
+            const badgeColor = team === 'CT' ? 'border-blue-500/40' : 'border-red-500/40';
+
+            return `
+                <div class="flex items-center justify-between p-2.5 rounded-lg bg-slate-900/80 border ${badgeColor}">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-2 h-2 rounded-full ${player.ready ? 'bg-emerald-400' : 'bg-slate-600'}"></div>
+                        <div>
+                            <span class="font-bold text-sm text-white flex items-center gap-1.5">
+                                ${player.name}
+                                ${player.isYou ? '<span class="text-[10px] bg-amber-500/20 text-amber-400 px-1.5 rounded border border-amber-500/30">TY</span>' : ''}
+                            </span>
+                            <span class="text-[11px] text-slate-400 block">${player.rank}</span>
+                        </div>
+                    </div>
+                    <span class="text-[10px] font-orbitron font-bold px-2 py-0.5 rounded border ${readyBg}">
+                        ${readyText}
+                    </span>
+                </div>
+            `;
+        }
+
+        // Join Specific Team
+        function joinTeam(team) {
+            const userIndexCT = ctPlayers.findIndex(p => p.isYou);
+            const userIndexT = tPlayers.findIndex(p => p.isYou);
+
+            if (team === 'CT' && userIndexT !== -1) {
+                const [you] = tPlayers.splice(userIndexT, 1);
+                ctPlayers.push(you);
+                showToast("Dołączono do Drużyny CT!", "fa-shield-halved");
+            } else if (team === 'T' && userIndexCT !== -1) {
+                const [you] = ctPlayers.splice(userIndexCT, 1);
+                tPlayers.push(you);
+                showToast("Dołączono do Drużyny T!", "fa-bomb");
+            }
+            renderLobby();
+        }
+
+        // Toggle Ready Status
+        function toggleReadyStatus() {
+            userIsReady = !userIsReady;
+            
+            const btn = document.getElementById('readyBtn');
+            const btnText = document.getElementById('readyBtnText');
+
+            [...ctPlayers, ...tPlayers].forEach(p => {
+                if (p.isYou) p.ready = userIsReady;
+            });
+
+            if (userIsReady) {
+                btn.className = "px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-orbitron font-extrabold rounded-xl shadow-lg transition duration-200 flex items-center space-x-2";
+                btnText.innerText = "COFNIJ GOTOWOŚĆ";
+                showToast("Oznaczono jako GOTOWY do gry!", "fa-check");
+            } else {
+                btn.className = "px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-slate-950 font-orbitron font-extrabold rounded-xl shadow-lg transition duration-200 flex items-center space-x-2";
+                btnText.innerText = "POTWIERDŹ GOTOWOŚĆ";
+                showToast("Anulowano status gotowości.", "fa-xmark");
+            }
+
+            renderLobby();
+        }
+
+        // Render Map Pool
+        function renderMapPool() {
+            const container = document.getElementById('mapPoolContainer');
+            container.innerHTML = mapPool.map((m, idx) => `
+                <button onclick="selectMap(${idx})" class="p-2 rounded-lg text-center font-orbitron text-xs font-bold transition border ${m.active ? 'bg-amber-500/20 text-amber-300 border-amber-500/50 glow-orange' : 'bg-slate-950 text-slate-400 border-slate-800 hover:border-slate-700'}">
+                    ${m.name}
+                </button>
+            `).join('');
+        }
+
+        function selectMap(index) {
+            mapPool.forEach((m, i) => m.active = i === index);
+            document.getElementById('selectedMapText').innerText = mapPool[index].name;
+            renderMapPool();
+            showToast(`Wybór mapy zmieniony na: ${mapPool[index].name}`, 'fa-map');
+        }
+
+        function createNewLobby() {
+            showToast("Utworzono nową poczekalnię meczową!", "fa-plus");
+        }
+
+        // Render Leaderboard Table
+        function renderLeaderboard(data) {
+            const tbody = document.getElementById('leaderboardBody');
+            tbody.innerHTML = data.map((player, index) => {
+                let rankBadgeClass = "text-slate-300";
+                if (index === 0) rankBadgeClass = "text-amber-400 font-bold";
+                else if (index === 1) rankBadgeClass = "text-slate-300 font-bold";
+                else if (index === 2) rankBadgeClass = "text-orange-400 font-bold";
+
+                return `
+                    <tr class="hover:bg-slate-800/40 transition duration-150">
+                        <td class="py-4 px-6 font-orbitron ${rankBadgeClass}">
+                            #${index + 1}
+                        </td>
+                        <td class="py-4 px-6 flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-xs text-amber-400">
+                                ${player.name.substring(0,2).toUpperCase()}
+                            </div>
+                            <span class="font-bold text-white">${player.name}</span>
+                        </td>
+                        <td class="py-4 px-6 text-center">
+                            <span class="bg-slate-800 border border-slate-700 text-xs px-2.5 py-1 rounded text-slate-300 font-semibold">
+                                ${player.rank}
+                            </span>
+                        </td>
+                        <td class="py-4 px-6 text-center font-orbitron font-bold text-amber-400">${player.elo}</td>
+                        <td class="py-4 px-6 text-center font-semibold ${player.kd >= 1.3 ? 'text-emerald-400' : 'text-slate-300'}">${player.kd}</td>
+                        <td class="py-4 px-6 text-center text-slate-300">${player.winrate}</td>
+                        <td class="py-4 px-6 text-center font-bold text-amber-300"><i class="fa-solid fa-star text-xs text-amber-400 mr-1"></i>${player.mvps}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Filter Leaderboard
+        function filterLeaderboard() {
+            const query = document.getElementById('playerSearch').value.toLowerCase();
+            const rank = document.getElementById('rankFilter').value;
+
+            const filtered = leaderboardData.filter(p => {
+                const matchesName = p.name.toLowerCase().includes(query);
+                const matchesRank = rank === 'ALL' || p.rank === rank;
+                return matchesName && matchesRank;
+            });
+
+            renderLeaderboard(filtered);
+        }
+
+        // Sort Leaderboard
+        let currentSort = { field: 'elo', asc: false };
+        function sortLeaderboard(field) {
+            currentSort.asc = currentSort.field === field ? !currentSort.asc : false;
+            currentSort.field = field;
+
+            leaderboardData.sort((a, b) => {
+                let valA = a[field];
+                let valB = b[field];
+
+                if (field === 'winrate') {
+                    valA = parseInt(valA);
+                    valB = parseInt(valB);
+                }
+
+                if (valA < valB) return currentSort.asc ? -1 : 1;
+                if (valA > valB) return currentSort.asc ? 1 : -1;
+                return 0;
+            });
+
+            filterLeaderboard();
+        }
+
+        // Render Match History
+        function renderMatchHistory() {
+            const container = document.getElementById('matchHistoryContainer');
+            container.innerHTML = matchHistoryData.map(m => `
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800 hover:border-slate-700 transition">
+                    <div class="flex justify-between items-center mb-3 text-xs text-slate-400">
+                        <span><i class="fa-regular fa-clock mr-1"></i>${m.date}</span>
+                        <span class="font-bold text-amber-400 uppercase">${m.map}</span>
+                    </div>
+
+                    <div class="flex items-center justify-between py-3 my-2 border-y border-slate-800">
+                        <div class="text-center flex-1">
+                            <div class="text-xs text-blue-400 font-bold uppercase mb-1">TEAM ALPHA</div>
+                            <div class="font-orbitron text-2xl font-black ${m.winner === 'CT' ? 'text-emerald-400' : 'text-slate-400'}">
+                                ${m.score.split(':')[0]}
+                            </div>
+                        </div>
+
+                        <div class="text-xs font-orbitron text-slate-500 px-2 font-bold">VS</div>
+
+                        <div class="text-center flex-1">
+                            <div class="text-xs text-red-400 font-bold uppercase mb-1">TEAM BRAVO</div>
+                            <div class="font-orbitron text-2xl font-black ${m.winner === 'T' ? 'text-emerald-400' : 'text-slate-400'}">
+                                ${m.score.split(':')[1]}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-3 flex items-center justify-between text-xs">
+                        <span class="text-slate-400">MVP Meczu:</span>
+                        <span class="font-bold text-amber-300"><i class="fa-solid fa-crown text-amber-400 mr-1"></i>${m.mvp}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+    </script>
 </body>
 </html>
